@@ -1,0 +1,18 @@
+{
+  "name": "school-absences",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "npm run seed --prefix backend && BACKEND_PORT=2999 concurrently \"npm run start:dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "start": "node backend/dist/seed/seed.js && npm run start:prod --prefix backend",
+    "lint": "echo 'No global lint script configured'"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

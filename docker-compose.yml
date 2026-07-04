@@ -1,0 +1,53 @@
+services:
+  app:
+    build: .
+    container_name: school_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=admin
+      - DB_PASSWORD=password123
+      - DB_DATABASE=school_absences
+      - DB_SYNC=true
+      - PORT=3000
+      - NODE_ENV=production
+      - JWT_SECRET=un_secret_tres_long_et_securise_pour_local_jwt_token_1234
+      - JWT_REFRESH_SECRET=un_secret_tres_long_et_securise_pour_local_refresh_token_1234
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: school_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=school_absences
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d school_absences"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: school_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
